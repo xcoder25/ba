@@ -2,13 +2,15 @@ FROM alpine:latest
 
 WORKDIR /pb
 
-# Install CA certificates (for HTTPS requests from PocketBase)
-RUN apk add --no-cache ca-certificates
+# Install CA certificates for HTTPS
+RUN apk add --no-cache ca-certificates unzip curl
 
-# Copy binary into container
-COPY pocketbase /pb/pocketbase
+# Download PocketBase (replace version if needed)
+RUN curl -L https://github.com/pocketbase/pocketbase/releases/latest/download/pocketbase_0.22.10_linux_amd64.zip -o pb.zip \
+    && unzip pb.zip -d /pb \
+    && rm pb.zip
 
-# Create a folder for persistent data
+# Persistent data directory
 VOLUME /pb/pb_data
 
 EXPOSE 8090
